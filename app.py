@@ -19,8 +19,9 @@ import PIL.Image
 
 from helper import local_css
 
-temp = pathlib.PosixPath
-pathlib.PosixPath = pathlib.WindowsPath
+## uncomment for development on local Windows 
+# temp = pathlib.PosixPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 st.title('**Balinese Dance Style** - Classification')
 st.markdown("""
@@ -109,6 +110,12 @@ if option == option1:
         'Please select an image:', list_test_img
     )
     # Read the image
+    test_img = test_img
+
+    ## join with os.path.joinpath() or PurePosixPath
+    ############## Python uses on OS/Linuz PosixPath, on Windows 'WindowsPath'
+    # uncomment above temp.pathlib
+
     file_path = 'test/' + test_img
     # Parse Image for clf
     img = PILImage.create(file_path)
