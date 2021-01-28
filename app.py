@@ -107,18 +107,19 @@ if option == option1:
     # Select an image
     list_test_img = os.listdir('test')
     test_img = st.selectbox(
-        'Please select an image:', list_test_img
-    )
+        'Please select an image:', list_test_img)
     # Read the image
     test_img = test_img
 
     ## join with os.path.joinpath() or PurePosixPath
     ############## Python uses on OS/Linuz PosixPath, on Windows 'WindowsPath'
     # uncomment above temp.pathlib
-
-    file_path = 'test/' + test_img
+    print(test_img)
+    file_path = Path('test/'+test_img)
+    # file_path = 'test/' + test_img
     # Parse Image for clf
     img = PILImage.create(file_path)
+
     # get the image display
     display_img = mpimg.imread(file_path)
     # call predict func with this img as parameters
