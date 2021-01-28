@@ -19,9 +19,9 @@ import PIL.Image
 
 from helper import local_css
 
-## uncomment for development on local Windows 
-# temp = pathlib.PosixPath
-# pathlib.PosixPath = pathlib.WindowsPath
+# uncomment for development on local Windows 
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 
 st.title('**Balinese Dance Style** - Classification')
 st.markdown("""
@@ -121,7 +121,13 @@ if option == option1:
     img = PILImage.create(file_path)
 
     # get the image display
-    display_img = mpimg.imread(file_path)
+    # display_img = mpimg.imread(file_path)
+
+    ##### TEST
+    ################
+    im_test3 = PIL.Image.open(file_path)
+    display_img = np.asarray(im_test3) # Image to display
+
     # call predict func with this img as parameters
     prediction(img, display_img)
 
