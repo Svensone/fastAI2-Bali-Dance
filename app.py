@@ -115,7 +115,8 @@ if option == option1:
     ############## Python uses on OS/Linuz PosixPath, on Windows 'WindowsPath'
     # uncomment above temp.pathlib
     print(test_img)
-    file_path = Path('test/'+test_img)
+    file_path = 'test/'+ test_img
+    print(file_path)
     # file_path = 'test/' + test_img
     # Parse Image for clf
     img = PILImage.create(file_path)
