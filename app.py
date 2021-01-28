@@ -73,7 +73,7 @@ def prediction(img, display_img):
         time.sleep(3)
     
     # load model 
-    path = Path('v2-resnet34.pkl')
+    path = 'v2-resnet34.pkl'
     model = load_learner(path)
     # path_model = Path('models\v2-stage-2.pth')
     # model.load(path_model)
