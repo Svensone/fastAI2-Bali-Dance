@@ -22,8 +22,8 @@ import PIL.Image
 from helper import local_css
 
 # uncomment for development on local Windows 
-# temp = pathlib.PosixPath
-# pathlib.PosixPath = pathlib.WindowsPath
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 
 st.title('**Balinese Dance Style** - Classification')
 st.markdown("""
