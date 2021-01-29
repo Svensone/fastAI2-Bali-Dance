@@ -1,7 +1,7 @@
 
 # from fastai.learner import load_learner
 from fastai.basics import *
-from fastai.vision.all import load_image, PILImage, Image
+from fastai.vision.all import load_image, PILImage, Image, ImageDataLoaders, cnn_learner, models
 from fastai.vision.all import *
 
 import torchvision.transforms as T
@@ -76,8 +76,8 @@ def prediction(img, display_img):
     
     # load_learner() not working, need .load() 
     #  setup model
-    data = ImageDataLoaders.from_csv('/data', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
-    learn = cnn_learner(data, resnet34, metrics=accuracy)
+    data = ImageDataLoaders.from_csv('/data/', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    learn = cnn_learner(data, models.resnet34, metrics=accuracy)
     learn.load('v2-stage-1')
 
     predict_class = learn.predict(img)[0]
