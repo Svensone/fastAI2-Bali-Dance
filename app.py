@@ -1,7 +1,9 @@
 
-from fastai.learner import load_learner
+# from fastai.learner import load_learner
+from fastai.basics import *
 from fastai.vision.all import load_image, PILImage, Image
-from fastai.vision import *
+from fastai.vision.all import *
+
 import torchvision.transforms as T
 
 import streamlit as st
@@ -72,13 +74,14 @@ def prediction(img, display_img):
     with st.spinner('Wait a second .....'):
         time.sleep(3)
     
-    # load model 
-    path = 'v2-resnet34.pkl'
-    model = load_learner(path, 'first')
-    # path_model = Path('models\v2-stage-2.pth')
-    # model.load(path_model)
-    predict_class = model.predict(img)[0]
-    predict_prop = model.predict(img)[2]
+    # load_learner() not working, need .load() 
+    #  setup model
+    data = ImageDataLoaders.from_csv('.', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    learn = cnn_learner(data, resnet34, metrics=accuracy)
+    learn.load('v2-stage-1')
+
+    predict_class = learn.predict(img)[0]
+    predict_prop = learn.predict(img)[2]
 
     # Display results
     if str(predict_class) == 'legong':
