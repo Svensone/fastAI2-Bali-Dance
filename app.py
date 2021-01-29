@@ -76,7 +76,7 @@ def prediction(img, display_img):
     
     # load_learner() not working, need .load() 
     #  setup model
-    data = ImageDataLoaders.from_csv('.', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data = ImageDataLoaders.from_csv('/data', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
     learn = cnn_learner(data, resnet34, metrics=accuracy)
     learn.load('v2-stage-1')
 
