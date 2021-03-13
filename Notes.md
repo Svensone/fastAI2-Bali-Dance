@@ -1,6 +1,12 @@
 
+Set up:
+- conda activate fastai2 env
 
-conda activate fastai2 env
+
+fastai ML models: since bigger than 100mb (github limit)
+- track with 
+git lfs track "model.pkl"
+git add .gitattributes
 
 2021.03.13:
 - problem with PosixPath in Production Modus on share.io (https://share.streamlit.io/svensone/fastai2-bali-dance/main/app.py)

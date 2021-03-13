@@ -18,7 +18,6 @@ from pathlib import Path
 import pathlib
 import base64
 import PIL.Image
-
 from helper import local_css
 
 # uncomment for development on local Windows 
@@ -76,12 +75,16 @@ def prediction(img, display_img):
     
     # load_learner() not working, need .load() 
     #  setup model
+
     # path = Path('data\')
-    # path= PosixPath('data\')
     
-    data = ImageDataLoaders.from_csv(path='data/', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data_path = pathlib.PurePath('data')
+    csv_path = pathlib.PurePath('data', 'cleaned.csv')
+    model_path  = pathlib.PurePath('data', 'models', 'v2-stage-1.pth')
+
+    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
-    learn.load('v2-stage-1')
+    learn.load( 'v2-stage-1')
 
     predict_class = learn.predict(img)[0]
     predict_prop = learn.predict(img)[2]
