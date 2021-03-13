@@ -82,7 +82,9 @@ def prediction(img, display_img):
     csv_path = pathlib.PurePath('data', 'cleaned.csv')
     model_path  = pathlib.PurePath('data', 'models', 'v2-stage-1.pth')
 
-    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data_posixpath = pathlib.PurePosixPath('data')
+    data = ImageDataLoaders.from_csv(path=data_posixpath , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
     learn.load( 'v2-stage-1')
 
