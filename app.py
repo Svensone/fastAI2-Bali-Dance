@@ -22,8 +22,8 @@ import PIL.Image
 from helper import local_css
 
 # uncomment for development on local Windows 
-temp = pathlib.PosixPath
-pathlib.PosixPath = pathlib.WindowsPath
+# temp = pathlib.PosixPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 st.title('**Balinese Dance Style** - Classification')
 st.markdown("""
@@ -76,9 +76,10 @@ def prediction(img, display_img):
     
     # load_learner() not working, need .load() 
     #  setup model
-    path= PosixPath('/data')
+    # path = Path('data\')
+    # path= PosixPath('data\')
     
-    data = ImageDataLoaders.from_csv(path=path, csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data = ImageDataLoaders.from_csv(path='data/', csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
     learn.load('v2-stage-1')
 
@@ -119,9 +120,9 @@ if option == option1:
     ## join with os.path.joinpath() or PurePosixPath
     ############## Python uses on OS/Linuz PosixPath, on Windows 'WindowsPath'
     # uncomment above temp.pathlib
-    print(test_img)
+    # print(test_img)
     file_path = 'test/'+ test_img
-    print(file_path)
+    # print(file_path)
     # file_path = 'test/' + test_img
     # Parse Image for clf
     img = PILImage.create(file_path)
