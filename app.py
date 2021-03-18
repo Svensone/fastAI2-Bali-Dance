@@ -1,9 +1,7 @@
 
 # from fastai.learner import load_learner
 from fastai.basics import *
-from fastai.vision.all import load_image, PILImage, Image, ImageDataLoaders, cnn_learner, models, accuracy
 from fastai.vision.all import *
-
 import torchvision.transforms as T
 
 import streamlit as st
@@ -17,12 +15,18 @@ from io import BytesIO
 from pathlib import Path
 import pathlib
 import base64
+from PIL import Image
 import PIL.Image
-from helper import local_css
 
-# uncomment for development on local Windows 
-# temp = pathlib.PosixPath
-# pathlib.PosixPath = pathlib.WindowsPath
+## get local css
+##################
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
+local_css("style.css")
+
+## Layout App
+##################
 
 st.title('**Balinese Dance Style** - Classification')
 st.markdown("""
@@ -32,12 +36,7 @@ Classifing images between the most famous balinese dances  \n \n
 *Kecak*,*Barong*& *Legong*
 """)
 
-## test local css
-##################
-local_css("style.css")
-
-
-# Set Background Image *local file" - heroku ? working
+# Set Background Image *local file"
 ###################################################
 @st.cache(allow_output_mutation=True)
 def get_base64_of_bin_file(bin_file):
@@ -73,17 +72,20 @@ def prediction(img, display_img):
     with st.spinner('Wait a second .....'):
         time.sleep(3)
     
+    # Setup ML-model
     # load_learner() not working, need .load() 
-    #  setup model
 
+    # Problems with PosixPath/ Windowspath
     # path = Path('data\')
-    
+        
+    # uncomment for development on local Windows 
+    # temp = pathlib.PosixPath
+    # pathlib.PosixPath = pathlib.WindowsPath
     data_path = pathlib.PurePath('data')
     csv_path = pathlib.PurePath('data', 'cleaned.csv')
     model_path  = pathlib.PurePath('data', 'models', 'v2-stage-1.pth')
 
-    data_posixpath = pathlib.PurePosixPath('data')
-    data = ImageDataLoaders.from_csv(path=data_posixpath , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
     
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
     learn.load( 'v2-stage-1')
@@ -122,24 +124,15 @@ if option == option1:
     # Read the image
     test_img = test_img
 
-    ## join with os.path.joinpath() or PurePosixPath
-    ############## Python uses on OS/Linuz PosixPath, on Windows 'WindowsPath'
-    # uncomment above temp.pathlib
-    # print(test_img)
     file_path = 'test/'+ test_img
-    # print(file_path)
-    # file_path = 'test/' + test_img
-    # Parse Image for clf
+
     img = PILImage.create(file_path)
-
-    # get the image display
-    # display_img = mpimg.imread(file_path)
-
+    # print(img)
     ##### TEST
     ################
     im_test3 = PIL.Image.open(file_path)
     display_img = np.asarray(im_test3) # Image to display
-
+    print(img)
     # call predict func with this img as parameters
     prediction(img, display_img)
 
@@ -148,20 +141,21 @@ if option == option1:
 else:
     url = st.text_input('URL of the image')
     if url !='':
+        # print(url)
         try:
+# test url pic
+# https://volunteerprogramsbali.org/wp-content/uploads/2015/11/news-108.jpg
             # Read image from the url
-            im = PIL.Image.open(requests.get(url, stream=True).raw)
+            response = requests.get(url)
+            pil_img = PIL.Image.open(BytesIO(response.content))
+            display_img = np.asarray(pil_img) # Image to display
+            
+            # Transform the image
+            timg = TensorImage(image2tensor(pil_img))
+            tpil = PILImage.create(timg)
+            print(tpil)
 
-            display_img = np.asarray(im) # Image to display
-            ## Transform PIL Image to pytorch tensor
-            min_img_size = 224
-            transform_pipeline = T.Compose([T.Resize(min_img_size), T.ToTensor()])
-            img_tensor = transform_pipeline(im)
-            # adjust dims for fastai clf
-            img_unsqueeze = img_tensor.unsqueeze(-1)
-            #convert to fastAi Image object
-            img_fastai = Image(img)
             # call predict func
-            prediction(img_fastai, display_img)
+            prediction(tpil, display_img)
         except:
             st.text("Invalid URL")
