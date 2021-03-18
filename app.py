@@ -27,8 +27,8 @@ local_css("style.css")
 
 # adjustment for different systems (share.io PosixPath)
 plt = platform.system()
-    if plt == 'Linux': 
-        pathlib.WindowsPath = pathlib.PosixPath
+if plt == 'Linux': 
+    pathlib.WindowsPath = pathlib.PosixPath
 
 ## Layout App
 ##################
@@ -81,7 +81,7 @@ def prediction(img, display_img):
     data_path = pathlib.Path('data')
     csv_path = pathlib.Path('data', 'cleaned.csv')
     model_path  = pathlib.Path('data', 'models', 'v2-stage-1.pth')
-    
+
     data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
 
 #  load Learner
