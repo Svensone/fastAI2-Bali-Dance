@@ -25,6 +25,11 @@ def local_css(file_name):
         st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
 local_css("style.css")
 
+# adjustment for different systems (share.io PosixPath)
+plt = platform.system()
+    if plt == 'Linux': 
+        pathlib.WindowsPath = pathlib.PosixPath
+
 ## Layout App
 ##################
 
@@ -71,18 +76,19 @@ def prediction(img, display_img):
     # loading spinner
     with st.spinner('Wait a second .....'):
         time.sleep(3)
-    plt = platform.system()
-    if plt == 'Linux': 
-        pathlib.WindowsPath = pathlib.PosixPath
-    data_path = pathlib.WindowsPath('data')
-    csv_path = pathlib.WindowsPath('data', 'cleaned.csv')
-    model_path  = pathlib.WindowsPath('data', 'models', 'v2-stage-1.pth')
 
-    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    # get data
+    data_path = pathlib.Path('data')
+    csv_path = pathlib.Path('data', 'cleaned.csv')
+    model_path  = pathlib.Path('data', 'models', 'v2-stage-1.pth')
     
+    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+
+#  load Learner
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
     learn.load( 'v2-stage-1')
 
+    # Prediction on Image
     predict_class = learn.predict(img)[0]
     predict_prop = learn.predict(img)[2]
 
