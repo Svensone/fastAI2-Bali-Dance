@@ -38,8 +38,15 @@ st.markdown("""
 ### AI - Computer Vision Recognition with **fastai/pytorch**
 
 Classifing images between the most famous balinese dances  \n \n 
-*Kecak*,*Barong*& *Legong*
+*Kecak* , *Barong*  &  *Legong*
+
+2021.03.21: Accuracy on ResNet34 Architectur: 80% after 5 Epochs
+\n
 """)
+link1 = 'Model & Data Preprocessing [Github](https://github.com/Svensone/fastAI2-Bali-Dance/blob/main/2021_03_29_%5Bfastaiv2%5D_New_Balinese_Dance_Image_Recognition.ipynb)'
+link2 = 'Deployment [Github](https://github.com/Svensone/fastAI2-Bali-Dance)'
+st.markdown(link1, unsafe_allow_html=True, )
+st.markdown(link2, unsafe_allow_html=True)
 
 # Set Background Image *local file"
 ###################################################
