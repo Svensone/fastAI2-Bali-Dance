@@ -129,9 +129,7 @@ if option == option1:
         'Please select an image:', list_test_img)
     # Read the image
     test_img = test_img
-
     file_path = 'test/'+ test_img
-
     img = PILImage.create(file_path)
     # print(img)
     ##### TEST
