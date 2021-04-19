@@ -26,9 +26,9 @@ def local_css(file_name):
 local_css("style.css")
 
 # adjustment for different systems (share.io PosixPath)
-plt = platform.system()
-if plt == 'Linux': 
-    pathlib.WindowsPath = pathlib.PosixPath
+# plt = platform.system()
+# if plt == 'Linux': 
+#     pathlib.WindowsPath = pathlib.PosixPath
 
 ## Layout App
 ##################
@@ -70,7 +70,10 @@ def set_png_as_page_bg(png_file):
         st.markdown(page_bg_img, unsafe_allow_html=True)
         return
 
-set_png_as_page_bg('assets/bg2.jpeg')
+PATH = pathlib.Path(__file__).parent
+IMG_PATH = PATH.joinpath("assets").resolve()
+
+set_png_as_page_bg(IMG_PATH.joinpath('bg2.jpeg'))
 
 #######################################
 ### Image Classification
@@ -85,11 +88,11 @@ def prediction(img, display_img):
         time.sleep(3)
 
     # get data
-    data_path = pathlib.Path('data')
-    csv_path = pathlib.Path('data', 'cleaned.csv')
-    model_path  = pathlib.Path('data', 'models', 'v2-stage-1.pth')
+    DATA_PATH = PATH.joinpath('data')
+    CSV_PATH = DATA_PATH.joinpath('cleaned.csv')
+    MODEL_PATH  = DATA_PATH.joinpath('models', 'v2-stage-1.pth')
 
-    data = ImageDataLoaders.from_csv(path=data_path , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
+    data = ImageDataLoaders.from_csv(path=DATA_PATH , csv_fname='cleaned.csv', valid_pct=0.2, item_tfms=Resize(224), csv_labels='cleaned.csv', bs=64)
 
 #  load Learner
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
@@ -97,19 +100,26 @@ def prediction(img, display_img):
 
     # Prediction on Image
     predict_class = learn.predict(img)[0]
-    predict_prop = learn.predict(img)[2]
+    predict_proba = learn.predict(img)[2]
+    
+    print(predict_proba)
+    print(f'predict class {predict_class}')
 
+    proba = float(predict_proba[1]) if str(predict_class) == 0 else float(predict_proba[0])
+    proba = (proba * 100)
+    proba = int(proba)
+    
     # Display results
     if str(predict_class) == 'legong':
-        st.success('this is a Scene of the famous Legong Kraton Dance')
+        st.success(f'This is a Scene of the famous Legong Kraton Dance. Probability of Prediction is {proba} % ')
         link = 'Find out more [Wikipedia](https://en.wikipedia.org/wiki/Legong)'
         st.markdown(link, unsafe_allow_html=True)
     elif str(predict_class) == "barong":
-        st.success('this is a Scene of the Barong Dance, which is together with Sanghyang considered to be an ancient native Balinese Dance')
+        st.success(f'Probability of Prediction is {proba} %, This is a Scene of the Barong Dance, which is together with Sanghyang considered to be an ancient native Balinese Dance')
         link = '[Barong Wikipedia](https://en.wikipedia.org/wiki/Barong_(mythology)#Barong_dance)'
         st.markdown(link, unsafe_allow_html=True)
     else:
-        st.success('this is a Scene of the Kecak Dance, created by german artist Walter Spies in 1930s')
+        st.success(f'This is a Scene of the Kecak Dance, created by german artist Walter Spies in 1930s. Probability of Prediction is {proba} % ')
         link = '[Kecak Wikipedia](https://en.wikipedia.org/wiki/Kecak)'
         st.markdown(link, unsafe_allow_html=True)
 
@@ -128,15 +138,18 @@ if option == option1:
     test_img = st.selectbox(
         'Please select an image:', list_test_img)
     # Read the image
-    test_img = test_img
+
+    TEST_IMG_PATH = PATH.joinpath('test', test_img)
     file_path = 'test/'+ test_img
-    img = PILImage.create(file_path)
+
+    img = PILImage.create(TEST_IMG_PATH)
     # print(img)
+
     ##### TEST
     ################
-    im_test3 = PIL.Image.open(file_path)
+    im_test3 = PIL.Image.open(TEST_IMG_PATH)
     display_img = np.asarray(im_test3) # Image to display
-    print(img)
+
     # call predict func with this img as parameters
     prediction(img, display_img)
 
@@ -157,7 +170,6 @@ else:
             # Transform the image
             timg = TensorImage(image2tensor(pil_img))
             tpil = PILImage.create(timg)
-            print(tpil)
 
             # call predict func
             prediction(tpil, display_img)
