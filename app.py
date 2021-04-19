@@ -96,7 +96,7 @@ def prediction(img, display_img):
 
 #  load Learner
     learn = cnn_learner(data, models.resnet34, metrics=accuracy)
-    learn.load( 'v2-stage-1')
+    learn.load('v2-stage-1')
 
     # Prediction on Image
     predict_class = learn.predict(img)[0]
@@ -108,7 +108,7 @@ def prediction(img, display_img):
     proba = float(predict_proba[1]) if str(predict_class) == 0 else float(predict_proba[0])
     proba = (proba * 100)
     proba = int(proba)
-    
+
     # Display results
     if str(predict_class) == 'legong':
         st.success(f'This is a Scene of the famous Legong Kraton Dance. Probability of Prediction is {proba} % ')
